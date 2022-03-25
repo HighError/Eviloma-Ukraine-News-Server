@@ -50,32 +50,16 @@ def get_channels():
     mongo_db = mongo_client["ukraine_news"]
     mongo_collection_channels = mongo_db["channels"]
 
-    channels = dumps(list(mongo_collection_channels.find()), ensure_ascii=False)
-    return Response(channels, status=200, mimetype='application/json; charset=utf-8')
-
-
-@app.route("/get/channels/photo")
-def get_avatar():
-    channel = request.args.get('channel', default="", type=str)
-    if channel == "":
-        return Response("", status=400, mimetype='application/json; charset=utf-8')
-
-    mongo_client = pymongo.MongoClient(os.getenv('MONGO'))
-    mongo_db = mongo_client["ukraine_news"]
-
-    mongo_collection_channels = mongo_db["channels"]
-
-    if mongo_collection_channels.count_documents({'channel_id': channel}) == 0:
-        return Response("", status=404, mimetype='application/json; charset=utf-8')
-
-    channel = mongo_collection_channels.find_one({'channel_id': channel})
-
-    if 'avatar' not in channel:
-        return Response("", status=404, mimetype='application/json; charset=utf-8')
-    image = channel['avatar']
-    decode = image.decode('utf-8')
-
-    return Response(decode, status=200)
+    # channels = dumps(list(mongo_collection_channels.find()), ensure_ascii=False)
+    channels = list(mongo_collection_channels.find())
+    for channel in channels:
+        if 'avatar' in channel:
+            image = channel['avatar']
+            decode = image.decode('utf-8')
+            del (channel['avatar'])
+            channel['avatar'] = decode
+    json = dumps(channels, ensure_ascii=False)
+    return Response(json, status=200, mimetype='application/json; charset=utf-8')
 
 
 @app.route("/get/socials")
