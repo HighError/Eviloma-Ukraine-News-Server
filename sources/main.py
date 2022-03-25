@@ -24,17 +24,15 @@ def get_app_xml():
 
 @app.route("/update")
 def update():
-    asyncio.run(update_telegram())
-    # agent = request.headers.get("User-Agent")
-    # need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
-    # if not (agent == need_agent):
-    #     return Response("", status=403, mimetype="application/json")
-    #
-    # try:
-    #     asyncio.run(update_telegram())
-    # except Exception as e:
-    #     print(f'Telegram update error: {e}')
+    agent = request.headers.get("User-Agent")
+    need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
+    if not (agent == need_agent):
+        return Response("", status=403, mimetype="application/json")
 
+    try:
+        asyncio.run(update_telegram())
+    except Exception as e:
+        print(f'Telegram update error: {e}')
     return Response("", status=200, mimetype="application/json")
 
 
