@@ -1,8 +1,5 @@
 import asyncio
-import json
 import os
-from PIL import Image
-from io import BytesIO
 import pymongo
 from flask import Flask, Response, request
 from sources.telegram import update_telegram
