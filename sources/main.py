@@ -1,9 +1,9 @@
 import asyncio
 import json
 import os
-
+from PIL import Image
+from io import BytesIO
 import pymongo
-
 from flask import Flask, Response, request
 from sources.telegram import update_telegram
 from sources.codemagic import get_latest_build_json
@@ -76,10 +76,9 @@ def get_avatar():
     if 'avatar' not in channel:
         return Response("", status=404, mimetype='application/json; charset=utf-8')
     image = channel['avatar']
-    decode = image.decode()
-    img_tag = '<img alt="sample" src="data:image/png;base64,{0}">'.format(decode)
+    decode = image.decode('utf-8')
 
-    return Response(img_tag, status=200)
+    return Response(decode, status=200)
 
 
 @app.route("/get/socials")
