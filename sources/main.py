@@ -1,7 +1,7 @@
 import asyncio
 import os
 import pymongo
-from flask import Flask, Response, request
+from flask import Flask, Response, request, redirect
 from sources.telegram import update_telegram
 from sources.codemagic import get_latest_build_json
 from bson.json_util import dumps
@@ -76,3 +76,9 @@ def get_socials():
 def apk():
     link = dumps(asyncio.run(get_latest_build_json('apk')))
     return Response(link, status=200, mimetype="application/json")
+
+
+@app.route("/app/apk/download")
+def apk_download():
+    link = asyncio.run(get_latest_build_json('apk'))
+    return redirect(link['link'])
