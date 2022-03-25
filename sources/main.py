@@ -77,7 +77,7 @@ def get_socials():
 def apk():
     # link = dumps(asyncio.run(get_latest_build_json('apk')))
     data = json.dumps({
-        "version": "0.1",
+        "version": "0.1.0",
         "link": "http://api.news.eviloma.xyz/app/apk/download"
     })
     return Response(data, status=200, mimetype="application/json")
