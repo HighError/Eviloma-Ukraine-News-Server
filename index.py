@@ -79,7 +79,7 @@ def get_socials():
 def apk():
     apk_link = asyncio.run(get_release())
     data = json.dumps({
-        "version": "0.1",
+        "version": "0.1.0",
         "link": apk_link
     })
     return Response(data, status=200, mimetype="application/json")
