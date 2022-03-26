@@ -3,11 +3,13 @@ import json
 import os
 import pymongo
 from flask import Flask, Response, request, redirect
+from flask_cors import CORS
 from src.telegram import update_telegram
 from src.github import get_release
 from bson.json_util import dumps
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route("/")
