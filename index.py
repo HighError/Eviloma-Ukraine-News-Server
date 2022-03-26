@@ -2,8 +2,9 @@ import asyncio
 import json
 import os
 import pymongo
-from flask import Flask, Response, request, send_file
+from flask import Flask, Response, request, redirect
 from src.telegram import update_telegram
+from src.github import get_release
 from bson.json_util import dumps
 
 app = Flask(__name__)
@@ -74,14 +75,15 @@ def get_socials():
 
 @app.route("/app/apk")
 def apk():
-    # link = dumps(asyncio.run(get_latest_build_json('apk')))
+    apk_link = asyncio.run(get_release())
     data = json.dumps({
         "version": "0.1",
-        "link": "http://api.news.eviloma.xyz/app/apk/download"
+        "link": apk_link
     })
     return Response(data, status=200, mimetype="application/json")
 
 
 @app.route("/app/apk/download")
 def apk_download():
-    return send_file('src/apps/app.apk', as_attachment=True)
+    apk_link = asyncio.run(get_release())
+    return redirect(apk_link)
