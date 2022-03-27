@@ -1,4 +1,3 @@
-import base64
 import datetime
 import os
 
@@ -33,17 +32,17 @@ async def update_telegram():
     await telegram_client.start()
     async with telegram_client:
         # Get DateTime now - 20 minutes
-        date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=20)
+        date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=17)
         for channel in channels:
             # Update avatar
-            temp = await telegram_client.download_profile_photo(channel["channel_id"])
-
-            with open(temp, 'rb') as image:
-                photo = base64.b64encode(image.read())
-                mongo_collection_channels.update_one({'channel_id': channel["channel_id"]},
-                                                     {"$set": {"avatar": photo}})
-
-            os.remove(temp)
+            # temp = await telegram_client.download_profile_photo(channel["channel_id"])
+            #
+            # with open(temp, 'rb') as image:
+            #     photo = base64.b64encode(image.read())
+            #     mongo_collection_channels.update_one({'channel_id': channel["channel_id"]},
+            #                                          {"$set": {"avatar": photo}})
+            #
+            # os.remove(temp)
 
             async for message in telegram_client.iter_messages(channel["channel_id"], offset_date=date, reverse=True):
                 if message.text == "":
@@ -69,4 +68,4 @@ async def update_telegram():
                     mongo_collection_posts.insert_one(post)
                     count += 1
 
-    print(f"[LOG]: Successfully added {count} posts from telegram!")
+    return f"[LOG]: Successfully added {count} posts from telegram!"

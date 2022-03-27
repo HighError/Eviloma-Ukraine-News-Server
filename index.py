@@ -2,12 +2,15 @@ import asyncio
 import json
 import os
 import pymongo
+import logging
 from flask import Flask, Response, request, redirect
 from flask_cors import CORS
 from src.telegram import update_telegram
 from src.github import get_release
 from bson.json_util import dumps
+from dotenv import load_dotenv
 
+load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
@@ -24,15 +27,19 @@ def get_app_xml():
 
 @app.route("/update")
 def update():
-    agent = request.headers.get("User-Agent")
-    need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
-    if not (agent == need_agent):
-        return Response("", status=403, mimetype="application/json")
+    # agent = request.headers.get("User-Agent")
+    # need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
+    # if not (agent == need_agent):
+    #     return Response("", status=403, mimetype="application/json")
 
     try:
-        asyncio.run(update_telegram())
+        msg = asyncio.run(update_telegram())
     except Exception as e:
         print(f'Telegram update error: {e}')
+        app.logger.error("Telegram not parse!")
+        return Response("", status=500, mimetype="application/json")
+
+    app.logger.info(msg)
     return Response("", status=200, mimetype="application/json")
 
 
