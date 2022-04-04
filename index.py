@@ -2,7 +2,6 @@ import asyncio
 import json
 import os
 import pymongo
-import logging
 from flask import Flask, Response, request, redirect
 from flask_cors import CORS
 from src.telegram import update_telegram
@@ -27,10 +26,10 @@ def get_app_xml():
 
 @app.route("/update")
 def update():
-    # agent = request.headers.get("User-Agent")
-    # need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
-    # if not (agent == need_agent):
-    #     return Response("", status=403, mimetype="application/json")
+    agent = request.headers.get("User-Agent")
+    need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
+    if not (agent == need_agent):
+        return Response("", status=403, mimetype="application/json")
 
     try:
         msg = asyncio.run(update_telegram())
@@ -60,7 +59,6 @@ def get_channels():
     mongo_db = mongo_client["ukraine_news"]
     mongo_collection_channels = mongo_db["channels"]
 
-    # channels = dumps(list(mongo_collection_channels.find()), ensure_ascii=False)
     channels = list(mongo_collection_channels.find())
     for channel in channels:
         if 'avatar' in channel:
@@ -68,8 +66,8 @@ def get_channels():
             decode = image.decode('utf-8')
             del (channel['avatar'])
             channel['avatar'] = decode
-    json = dumps(channels, ensure_ascii=False)
-    return Response(json, status=200, mimetype='application/json; charset=utf-8')
+    json_data = dumps(channels, ensure_ascii=False)
+    return Response(json_data, status=200, mimetype='application/json; charset=utf-8')
 
 
 @app.route("/get/socials")
@@ -84,11 +82,7 @@ def get_socials():
 
 @app.route("/app/apk")
 def apk():
-    apk_link = asyncio.run(get_release())
-    data = json.dumps({
-        "version": "0.1.0",
-        "link": apk_link
-    })
+    data = asyncio.run(get_release())
     return Response(data, status=200, mimetype="application/json")
 
 
