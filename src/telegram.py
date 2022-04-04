@@ -32,7 +32,7 @@ async def update_telegram():
     await telegram_client.start()
     async with telegram_client:
         # Get DateTime now - 20 minutes
-        date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=22)
+        date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=32)
         for channel in channels:
             # Update avatar
             # temp = await telegram_client.download_profile_photo(channel["channel_id"])
