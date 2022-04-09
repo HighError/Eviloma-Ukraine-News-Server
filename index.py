@@ -7,6 +7,7 @@ from flask_cors import CORS
 from src.telegram import update_telegram
 from src.twitter import update_twitter
 from src.github import get_release
+from src.remove import remove_old_data
 from bson.json_util import dumps
 from dotenv import load_dotenv
 
@@ -57,6 +58,17 @@ def twitter():
         return Response("", status=500, mimetype="application/json")
 
     app.logger.info(msg)
+    return Response("", status=200, mimetype="application/json")
+
+
+@app.route("/remove")
+def remove():
+    agent = request.headers.get("User-Agent")
+    need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
+    if not (agent == need_agent):
+        return Response("", status=403, mimetype="application/json")
+
+    asyncio.run(remove_old_data())
     return Response("", status=200, mimetype="application/json")
 
 
