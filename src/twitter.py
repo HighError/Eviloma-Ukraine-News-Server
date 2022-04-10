@@ -49,7 +49,7 @@ async def update_twitter():
                         {'social': 'twitter', 'channel_id': channel["channel_id"], 'message_id': post['id']}) == 0:
                     post_data = {
                         'channel_id': channel['channel_id'],
-                        'date': post['created_at'],
+                        'date': date.strptime(post['created_at'], '%Y-%m-%dT%H:%M:%S.%fZ'),
                         'message_id': post['id'],
                         'message': post['text'],
                         'social': 'twitter',
