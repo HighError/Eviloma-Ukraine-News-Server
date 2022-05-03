@@ -4,6 +4,8 @@ import os
 import pymongo
 from flask import Flask, Response, request, redirect
 from flask_cors import CORS
+
+from src.facebook import update_facebook
 from src.telegram import update_telegram
 from src.twitter import update_twitter
 from src.github import get_release
@@ -61,6 +63,23 @@ def twitter():
     return Response("", status=200, mimetype="application/json")
 
 
+@app.route("/update/facebook")
+def facebook():
+    agent = request.headers.get("User-Agent")
+    need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
+    if not (agent == need_agent):
+        return Response("", status=403, mimetype="application/json")
+
+    try:
+        msg = asyncio.run(update_facebook())
+    except Exception as e:
+        print(f'Facebook update error: {e}')
+        return Response("", status=500, mimetype="application/json")
+
+    app.logger.info(msg)
+    return Response("", status=200, mimetype="application/json")
+
+
 @app.route("/remove")
 def remove():
     agent = request.headers.get("User-Agent")
@@ -90,24 +109,8 @@ def get_channels():
     mongo_collection_channels = mongo_db["channels"]
 
     channels = list(mongo_collection_channels.find())
-    for channel in channels:
-        if 'avatar' in channel:
-            image = channel['avatar']
-            decode = image.decode('utf-8')
-            del (channel['avatar'])
-            channel['avatar'] = decode
     json_data = dumps(channels, ensure_ascii=False)
     return Response(json_data, status=200, mimetype='application/json; charset=utf-8')
-
-
-@app.route("/get/socials")
-def get_socials():
-    mongo_client = pymongo.MongoClient(os.getenv('MONGO'))
-    mongo_db = mongo_client["ukraine_news"]
-    mongo_collection_socials = mongo_db["socials"]
-
-    socials = dumps(list(mongo_collection_socials.find()), ensure_ascii=False)
-    return Response(socials, status=200, mimetype='application/json; charset=utf-8')
 
 
 @app.route("/app/apk")

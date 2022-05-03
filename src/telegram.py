@@ -34,30 +34,20 @@ async def update_telegram():
         # Get DateTime now - 30 minutes
         date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=32)
         for channel in channels:
-            if channel["social"] == "telegram":
-                # Update avatar
-                # temp = await telegram_client.download_profile_photo(channel["channel_id"])
-                #
-                # with open(temp, 'rb') as image:
-                #     photo = base64.b64encode(image.read())
-                #     mongo_collection_channels.update_one({'channel_id': channel["channel_id"]},
-                #                                          {"$set": {"avatar": photo}})
-                #
-                # os.remove(temp)
-
+            if channel["social"] == "Telegram":
                 async for message in telegram_client.iter_messages(channel["channel_id"], offset_date=date, reverse=True):
                     if message.text == "":
                         # If message text empty miss post
                         continue
                     if mongo_collection_posts.count_documents(
-                            {'social': 'telegram', 'channel_id': channel["channel_id"], 'message_id': message.id}) == 0:
+                            {'social': 'Telegram', 'channel_id': channel["channel_id"], 'message_id': message.id}) == 0:
                         # Parse markdown
                         html = markdown(message.text)
                         text = "".join(BeautifulSoup(html, "html.parser").findAll(text=True))
 
                         # Generate post data
                         post = {
-                            "social": 'telegram',
+                            "social": 'Telegram',
                             "channel_id": channel["channel_id"],
                             "message_id": message.id,
                             "message": text,
