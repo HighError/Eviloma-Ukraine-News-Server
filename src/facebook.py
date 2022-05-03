@@ -9,7 +9,9 @@ import pytz
 
 async def update_facebook():
     login = os.getenv("FACEBOOK_LOGIN")
+    print(login)
     password = os.getenv("FACEBOOK_PASSWORD")
+    print(password)
 
     _scraper.login(login, password)
     cookies = _scraper.session.cookies
