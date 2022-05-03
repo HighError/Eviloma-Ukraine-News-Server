@@ -37,6 +37,7 @@ async def update_facebook():
                         'message_id': post['post_id'],
                         'message': post["text"],
                         'social': 'Facebook',
-                        'url': post['post_url']
+                        'url': post['post_url'],
+                        'images': post['images'],
                     }
                     mongo_collection_posts.insert_one(post_data)
