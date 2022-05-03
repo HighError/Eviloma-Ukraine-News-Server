@@ -8,12 +8,6 @@ import pytz
 
 
 async def update_facebook():
-    login = os.getenv("FACEBOOK_LOGIN")
-    password = os.getenv("FACEBOOK_PASSWORD")
-
-    _scraper.login(login, password)
-    cookies = _scraper.session.cookies
-    set_cookies(cookies)
     set_user_agent("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
 
     # Connect to MongoDb
