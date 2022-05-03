@@ -65,10 +65,10 @@ def twitter():
 
 @app.route("/update/facebook")
 def facebook():
-    # agent = request.headers.get("User-Agent")
-    # need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
-    # if not (agent == need_agent):
-    #     return Response("", status=403, mimetype="application/json")
+    agent = request.headers.get("User-Agent")
+    need_agent = "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)"
+    if not (agent == need_agent):
+        return Response("", status=403, mimetype="application/json")
 
     try:
         msg = asyncio.run(update_facebook())
