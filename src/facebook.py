@@ -27,7 +27,7 @@ async def update_facebook():
 
     for channel in channels:
         if channel["social"] == "Facebook":
-            for post in get_posts(channel["channel_id"], pages=3):
+            for post in get_posts(channel["channel_id"], pages=3, cookies=get_cookie()):
                 if mongo_collection_posts.count_documents(
                         {'social': 'Facebook', 'channel_id': channel['channel_id'],
                          'message_id': post['post_id']}) == 0:
@@ -41,3 +41,10 @@ async def update_facebook():
                         'images': post['images'],
                     }
                     mongo_collection_posts.insert_one(post_data)
+
+
+def get_cookie():
+    return {
+        'c_user': os.getenv("FACEBOOK_C_USER"),
+        'xs': os.getenv("FACEBOOK_XS"),
+    }
